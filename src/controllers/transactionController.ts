@@ -1,28 +1,13 @@
 import { Request, Response } from 'express';
+import Transaction from '../models/Transaction';
 
-const transactions = [
-  {
-    id: 'TXN001',
-    user: 'Ahmed Hassan',
-    amount: '$250.00',
-    fee: '$5.00',
-    recipient: 'Hassan Family',
-    destination: 'Morocco',
-    status: 'completed',
-    date: '2024-01-20',
-    time: '14:30',
-    method: 'Bank Transfer',
-    reference: 'MT240120001',
-  },
-  // ... more mock transactions
-];
-
-export function getTransactions(req: Request, res: Response) {
+export async function getTransactions(req: Request, res: Response) {
+  const transactions = await Transaction.find().populate('user');
   res.json(transactions);
 }
 
-export function getTransactionDetails(req: Request, res: Response) {
-  const txn = transactions.find(t => t.id === req.params.transactionId);
+export async function getTransactionDetails(req: Request, res: Response) {
+  const txn = await Transaction.findById(req.params.transactionId).populate('user');
   if (!txn) return res.status(404).json({ error: 'Transaction not found' });
   res.json(txn);
 } 

@@ -1,48 +1,34 @@
 import { Request, Response } from 'express';
+import User from '../models/User';
 
-const users = [
-  {
-    id: 'USR001',
-    name: 'Ahmed Hassan',
-    email: 'ahmed.hassan@email.com',
-    phone: '+212-612-345-678',
-    country: 'Morocco',
-    totalSent: '$2,450.00',
-    transactions: 12,
-    status: 'verified',
-    joinDate: '2023-01-15',
-    lastActive: '2 hours ago',
-    kycStatus: 'completed',
-    riskLevel: 'low',
-  },
-  // ... more mock users
-];
-
-export function getUsers(req: Request, res: Response) {
+export async function getUsers(req: Request, res: Response) {
+  const users = await User.find();
   res.json(users);
 }
 
-export function getUserDetails(req: Request, res: Response) {
-  const user = users.find(u => u.id === req.params.userId);
+export async function getUserDetails(req: Request, res: Response) {
+  const user = await User.findById(req.params.userId);
   if (!user) return res.status(404).json({ error: 'User not found' });
   res.json(user);
 }
 
-export function updateUserStatus(req: Request, res: Response) {
-  const user = users.find(u => u.id === req.params.userId);
+export async function updateUserStatus(req: Request, res: Response) {
+  const user = await User.findByIdAndUpdate(req.params.userId, { status: req.body.status }, { new: true });
   if (!user) return res.status(404).json({ error: 'User not found' });
-  user.status = req.body.status;
   res.json({ message: 'User status updated', user });
 }
 
-export function sendUserEmail(req: Request, res: Response) {
+export async function sendUserEmail(req: Request, res: Response) {
+  // Implement real email logic here
   res.json({ message: 'Email sent to user' });
 }
 
-export function sendUserSMS(req: Request, res: Response) {
+export async function sendUserSMS(req: Request, res: Response) {
+  // Implement real SMS logic here
   res.json({ message: 'SMS sent to user' });
 }
 
-export function refundUser(req: Request, res: Response) {
+export async function refundUser(req: Request, res: Response) {
+  // Implement real refund logic here
   res.json({ message: 'Refund initiated for user' });
 } 

@@ -1,26 +1,19 @@
 import { Request, Response } from 'express';
+import Notification from '../models/Notification';
 
-const notifications = [
-  {
-    id: 1,
-    type: 'email',
-    recipient: 'All Users',
-    subject: 'System Maintenance Notice',
-    status: 'sent',
-    timestamp: '2 hours ago',
-    count: 1247,
-  },
-  // ... more mock notifications
-];
-
-export function sendEmail(req: Request, res: Response) {
-  res.json({ message: 'Email sent!' });
+export async function sendEmail(req: Request, res: Response) {
+  const { recipient, subject, content } = req.body;
+  const notification = await Notification.create({ type: 'email', recipient, subject, content, status: 'sent', count: 1 });
+  res.json(notification);
 }
 
-export function sendSMS(req: Request, res: Response) {
-  res.json({ message: 'SMS sent!' });
+export async function sendSMS(req: Request, res: Response) {
+  const { recipient, content } = req.body;
+  const notification = await Notification.create({ type: 'sms', recipient, subject: '', content, status: 'sent', count: 1 });
+  res.json(notification);
 }
 
-export function getNotifications(req: Request, res: Response) {
+export async function getNotifications(req: Request, res: Response) {
+  const notifications = await Notification.find().sort({ timestamp: -1 });
   res.json(notifications);
 } 

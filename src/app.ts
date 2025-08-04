@@ -8,12 +8,17 @@ import dashboardRoutes from './routes/dashboardRoutes';
 import chatRoutes from './routes/chatRoutes';
 import notificationRoutes from './routes/notificationRoutes';
 import { errorHandler } from './middleware/errorHandler';
+import mongoose from 'mongoose';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
+
+mongoose.connect(process.env.MONGODB_URI || '', { })
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
